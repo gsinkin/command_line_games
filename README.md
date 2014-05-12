@@ -15,15 +15,15 @@ To Run:
 
 Tic Tac Toe:
 ```
-    python game.py t3
+python game.py t3
 ```
 
 Connect Four:
 ```
-    python game.py c4
+python game.py c4
 ```
 
 Magic Tic Tac Toe:
 ```
-    python game.y mt3
+python game.y mt3
 ```
