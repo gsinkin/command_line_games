@@ -18,8 +18,75 @@ class Board(object):
             self._location_matrix = matrix
             self._board_size = len(matrix)
 
+    def check_column(self, x_pos, y_pos, player):
+        count = 0
+        for index in xrange(self._board_size):
+            if self._location_matrix[x_pos][index] != player:
+                count = 0
+            else:
+                count += 1
+            if count == self._connection_length:
+                return player
+
+    def check_row(self, x_pos, y_pos, player):
+        count = 0
+        for index in xrange(self._board_size):
+            if self._location_matrix[index][y_pos] != player:
+                count = 0
+            else:
+                count += 1
+            if count == self._connection_length:
+                return player
+
+    def check_diagonal(self, x_pos, y_pos, player):
+        y_offset = y_pos - x_pos
+        count = 0
+        for index in xrange(self._board_size):
+            y_pos = index + y_offset
+            if y_pos < 0:
+                continue
+            elif y_pos >= self._board_size:
+                return
+            elif self._location_matrix[index][y_pos] != player:
+                count = 0
+                continue
+            else:
+                count += 1
+            if count == self._connection_length:
+                return player
+
+    def check_reverse_diagonal(self, x_pos, y_pos, player):
+        # y = -x + y_pos + x_pos
+        count = 0
+        y_offset = y_pos + x_pos
+        for index in xrange(self._board_size):
+            y_pos = -index + y_offset
+            if y_pos >= self._board_size:
+                count = 0
+                continue
+            elif y_pos < 0:
+                return
+            elif self._location_matrix[index][y_pos] != player:
+                count = 0
+                continue
+            else:
+                count += 1
+            if count == self._connection_length:
+                return player
+
+    def check_cats(self, x_pos, y_pos, player):
+        if self._move_count == math.pow(self._board_size, 2):
+            self._gameover = True
+
     def validate_matrix(self, x_pos, y_pos, player):
-        pass
+        checks = [self.check_column, self.check_row, self.check_diagonal,
+                  self.check_reverse_diagonal, self.check_cats]
+        for check in checks:
+            winner = check(x_pos, y_pos, player)
+            if winner:
+                self._winner = winner
+                self._gameover = True
+                return
 
     def render(self):
         lines = []
@@ -71,48 +138,6 @@ class TicTacToeBoard(Board):
     _connection_length = 3
     _board_size = 3
 
-    def validate_matrix(self, x_pos, y_pos, player):
-        # check column
-        for index in xrange(self._board_size):
-            if self._location_matrix[x_pos][index] != player:
-                break
-            if index == self._board_size - 1:
-                self._gameover = True
-                self._winner = player
-                return
-
-        # check row
-        for index in xrange(self._board_size):
-            if self._location_matrix[index][y_pos] != player:
-                break
-            if index == self._board_size - 1:
-                self._gameover = True
-                self._winner = player
-                return
-
-        # check diagonal
-        for index in xrange(self._board_size):
-            if self._location_matrix[index][index] != player:
-                break
-            if index == self._board_size - 1:
-                self._gameover = True
-                self._winner = player
-                return
-
-        # check diagonal
-        for index in xrange(self._board_size):
-            y_pos = self._board_size - index - 1
-            if self._location_matrix[index][y_pos] != player:
-                break
-            if index == self._board_size - 1:
-                self._gameover = True
-                self._winner = player
-                return
-
-        # cats game
-        if self._move_count == math.pow(self._board_size, 2):
-            self._gameover = True
-
 
 class ConnectFourBoard(Board):
 
@@ -128,101 +153,14 @@ class ConnectFourBoard(Board):
                     break
         return open_locations
 
-    def validate_matrix(self, x_pos, y_pos, player):
-        # this algorithm sucks. needs improvement
-        # check column
-        count = 0
-        for index in xrange(self._board_size):
-            if self._location_matrix[x_pos][index] != player:
-                count = 0
-            else:
-                count += 1
-            if count == self._connection_length:
-                self._gameover = True
-                self._winner = player
-                return
-
-        # check row
-        count = 0
-        for index in xrange(self._board_size):
-            if self._location_matrix[index][y_pos] != player:
-                count = 0
-            else:
-                count += 1
-            if count == self._connection_length:
-                self._gameover = True
-                self._winner = player
-                return
-
-        # check diagonal
-        diff = self._board_size - self._connection_length + 1
-        for x_offset in xrange(0, diff):
-            for y_offset in xrange(0, diff):
-                count = 0
-                for index in xrange(self._board_size - max(x_offset, y_offset)):
-                    if self._location_matrix[x_offset + index][y_offset + index] != player:
-                        count = 0
-                    else:
-                        count += 1
-                    if count == self._connection_length:
-                        self._gameover = True
-                        self._winner = player
-                        return
-
-        # check reverse diagonal
-        for x_offset in xrange(0, diff):
-            for y_offset in xrange(0, diff):
-                count = 0
-                for index in xrange(self._board_size - max(x_offset, y_offset)):
-                    if self._location_matrix[index + x_offset][self._board_size - 1 - y_offset - index] != player:
-                        count = 0
-                    else:
-                        count += 1
-                    if count == self._connection_length:
-                        self._gameover = True
-                        self._winner = player
-                        return
-
-        # cats game
-        if self._move_count == math.pow(self._board_size, 2):
-            self._gameover = True
-
 
 class MegaTicTacToe(Board):
 
     _connection_length = 3
     _board_size = 8
 
-    def validate_matrix(self, x_pos, y_pos, player):
-        # check diagonal
-        diff = self._board_size - self._connection_length + 1
-        for x_offset in xrange(0, diff):
-            for y_offset in xrange(0, diff):
-                count = 0
-                for index in xrange(self._board_size - max(x_offset, y_offset)):
-                    if self._location_matrix[x_offset + index][y_offset + index] != player:
-                        count = 0
-                    else:
-                        count += 1
-                    if count == self._connection_length:
-                        self._gameover = True
-                        self._winner = player
-                        return
+    def check_column(self, x_pos, y_pos, player):
+        pass
 
-        # check reverse diagonal
-        for x_offset in xrange(0, diff):
-            for y_offset in xrange(0, diff):
-                count = 0
-                for index in xrange(self._board_size - max(x_offset, y_offset)):
-                    if self._location_matrix[index + x_offset][self._board_size - 1 - y_offset - index] != player:
-                        count = 0
-                    else:
-                        count += 1
-                    if count == self._connection_length:
-                        self._gameover = True
-                        self._winner = player
-                        return
-
-        # cats game
-        if self._move_count == math.pow(self._board_size, 2):
-            self._gameover = True
+    def check_row(self, x_pos, y_pos, player):
+        pass
