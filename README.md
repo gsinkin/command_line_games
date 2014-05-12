@@ -3,7 +3,7 @@ command_line_games
 
 Command line implementation of TicTacToe, ConnectFour, and MegaTicTacToe
 
-Setup:
+Setup (not necessary for running the code, only for development):
 
 ```
 virtualenv --no-site-packages games
