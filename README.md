@@ -3,8 +3,6 @@ command_line_games
 
 Command line implementation of TicTacToe, ConnectFour, and MegaTicTacToe
 
-Hilarious mix up - the board renders upside down. Lol.
-
 Setup:
 
 virtualenv --no-site-packages games
