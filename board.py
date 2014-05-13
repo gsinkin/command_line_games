@@ -41,13 +41,13 @@ class Board(object):
     def check_diagonal(self, x_pos, y_pos, player):
         y_offset = y_pos - x_pos
         count = 0
-        for index in xrange(self._board_size):
-            y_pos = index + y_offset
-            if y_pos < 0:
+        for x in xrange(self._board_size):
+            y = x + y_offset
+            if y < 0:
                 continue
-            elif y_pos >= self._board_size:
+            elif y >= self._board_size:
                 return
-            elif self._location_matrix[index][y_pos] != player:
+            elif self._location_matrix[x][y] != player:
                 count = 0
                 continue
             else:
@@ -59,14 +59,14 @@ class Board(object):
         # y = -x + y_pos + x_pos
         count = 0
         y_offset = y_pos + x_pos
-        for index in xrange(self._board_size):
-            y_pos = -index + y_offset
-            if y_pos >= self._board_size:
+        for x in xrange(self._board_size):
+            y = -x + y_offset
+            if y >= self._board_size:
                 count = 0
                 continue
-            elif y_pos < 0:
+            elif y < 0:
                 return
-            elif self._location_matrix[index][y_pos] != player:
+            elif self._location_matrix[x][y] != player:
                 count = 0
                 continue
             else:
