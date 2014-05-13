@@ -92,19 +92,14 @@ class Board(object):
         lines = []
         line = []
         for y_index in reversed(xrange(self._board_size)):
+            line.append("|")
             for x_index, y_values in enumerate(self._location_matrix):
                 player = y_values[y_index]
                 line.append(player.render() if player else "-")
-                if x_index < self._board_size - 1:
-                    line.append("|")
+                line.append("|")
             lines.append(line)
             line = []
-            if y_index > 0:
-                for player in xrange((self._board_size * 2) - 1):
-                    line.append("-")
-                lines.append(line)
-                line = []
-        lines.append(["GAMEOVER? %s" % self._gameover])
+        lines.append(["GAMEOVER? %s\n" % self._gameover])
         for line in lines:
             print " ".join(line)
         return lines
@@ -124,8 +119,8 @@ class Board(object):
         return self._winner
 
     def set_location(self, x_pos, y_pos, player):
-        assert x_pos < self._board_size
-        assert y_pos < self._board_size
+        assert x_pos >= 0 and x_pos < self._board_size
+        assert y_pos >= 0 and y_pos < self._board_size
 
         self._location_matrix[x_pos][y_pos] = player
         self._move_count += 1

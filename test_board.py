@@ -5,50 +5,43 @@ from player import Player
 def test_render_board():
     '''
     board: [['A', 'B'], ['B', 'A']]
-    render: 'B' | 'A'
-             -  -  -
-            'A' | 'B'
+    render: |'B'|'A'|
+            |'A'|'B'|
             GAMEOVER? False
+
     '''
     player_a = Player("A")
     player_b = Player("B")
     board = Board([[player_a, player_b], [player_b, player_a]])
-    assert board.render() == [['B', '|', 'A'],
-                              ['-', '-', '-'],
-                              ['A', '|', 'B'],
-                              ["GAMEOVER? False"]]
+    assert board.render() == [['|', 'B', '|', 'A', '|'],
+                              ['|', 'A', '|', 'B', '|'],
+                              ["GAMEOVER? False\n"]]
 
     '''
     board: [['A', -], ['C', 'A']]
-    render: '-' | 'A'
-             -  -  -
-             A  | 'C'
-            GAMEOVER? True
+    render: | - | A |
+            | A | C |
+            GAMEOVER? True\n
     '''
     player_c = Player("C")
     board = Board([[player_a, None], [player_c, player_a]])
     board._gameover = True
-    assert board.render() == [['-', '|', 'A'],
-                              ['-', '-', '-'],
-                              ['A', '|', 'C'],
-                              ["GAMEOVER? True"]]
+    assert board.render() == [['|', '-', '|', 'A', '|'],
+                              ['|', 'A', '|', 'C', '|'],
+                              ["GAMEOVER? True\n"]]
 
     '''
     board: [[None, None, None], [None, None, None], [None, None, None]]
-    render:  - | - | -
-             - - - - -
-             - | - | -
-             - - - - -
-             - | - | -
-            GAMEOVER? False
+    render:  | - | - | - |
+             | - | - | - |
+             | - | - | - |
+            GAMEOVER? False\n
     '''
     board = Board([[None, None, None], [None, None, None], [None, None, None]])
-    assert board.render() == [['-', '|', '-', '|', '-'],
-                              ['-', '-', '-', '-', '-'],
-                              ['-', '|', '-', '|', '-'],
-                              ['-', '-', '-', '-', '-'],
-                              ['-', '|', '-', '|', '-'],
-                              ["GAMEOVER? False"]]
+    assert board.render() == [['|', '-', '|', '-', '|', '-', '|'],
+                              ['|', '-', '|', '-', '|', '-', '|'],
+                              ['|', '-', '|', '-', '|', '-', '|'],
+                              ["GAMEOVER? False\n"]]
 
 
 def test_get_open_locations():
