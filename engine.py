@@ -19,4 +19,3 @@ class ConnectionGameEngine(object):
                 if self.board.is_gameover():
                     break
         logger.debug("Game over")
-        return True
